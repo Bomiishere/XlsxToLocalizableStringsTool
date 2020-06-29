@@ -28,7 +28,7 @@ column_translate = 1
 python3 xlsx_convert.py
 ```
 ##### Optional
-修改 output file 註解
+###### 修改 output file 註解
 ```
 header_1_export_file_name = 'Output.strings'
 header_2_from_where = 'from xlsx_convert.py' 
