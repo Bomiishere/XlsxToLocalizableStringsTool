@@ -4,14 +4,14 @@ import re
 
 ### Setup for Reading .xlsx ###
 # 讀取檔案
-read_xlsx_file_name = 'result.xlsx'
+read_xlsx_file_name = 'I18N_iOS_string_table_20200624.xlsx'
 # 專案內表示文字之欄位
 column_expression = 0 
 # 欲轉換語系之欄位
 column_translate = 1
 
 ### Output Header ###
-header_1_export_file_name = 'Output.strings'
+header_1_export_file_name = 'Localizable.strings'
 header_2_from_where = 'from xlsx_convert.py' 
 header_3_created_by = 'auto generated'
 header_4_create_date = datetime.datetime.now().strftime('%Y/%-m/%-d')
@@ -25,6 +25,9 @@ sheet = workbook.sheet_by_index(0)
 last_match_str = ''
 
 for row in range(column_expression, sheet.nrows):
+
+	### TODO: Read Localized Target to CI ###
+	if row == 0: continue
 	
 	str_expression = sheet.cell_value(row,column_expression)
 
