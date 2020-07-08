@@ -4,14 +4,14 @@ import re
 
 ### Setup for Reading .xlsx ###
 # 讀取檔案
-read_xlsx_file_name = 'I18N_iOS_string_table_20200624.xlsx'
+read_xlsx_file_name = 'result_eddy.xlsx'
 # 專案內表示文字之欄位
 column_expression = 0 
 # 欲轉換語系之欄位
 column_translate = 1
 
 ### Output Header ###
-header_1_export_file_name = 'Localizable.strings'
+header_1_export_file_name = 'Localizable_eddy.strings'
 header_2_from_where = 'from xlsx_convert.py' 
 header_3_created_by = 'auto generated'
 header_4_create_date = datetime.datetime.now().strftime('%Y/%-m/%-d')
@@ -34,12 +34,15 @@ for row in range(column_expression, sheet.nrows):
 	# prevent from wrong value, wrong translate to 'N/A'
 	# 5 means error, 6 means empty
 	target_type = sheet.cell_type(row, column_translate)
-	if target_type != 5 and target_type != 6:
+	if row == 1:
+		print("row: %d, t_type: %d, last: %s" % (row, target_type, sheet.cell_value(row - 1,0)))
+	if target_type != 0 and target_type != 5 and target_type != 6:
 		str_translate = sheet.cell_value(row,column_translate)
 		# find " character, add \
 		if target_type == 1:
 			str_translate = re.sub(r'(")', r'\\"', str_translate)
 	else:
+		print("row: %d, t_type: %d, last: %s" % (row, target_type, sheet.cell_value(row - 1,0)))
 		continue
 		# if wanna cetrain text write in
 		# str_translate = 'N/A'
