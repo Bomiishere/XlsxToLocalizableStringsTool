@@ -40,7 +40,9 @@ for row in range(column_expression, sheet.nrows):
 		if target_type == 1:
 			str_translate = re.sub(r'(")', r'\\"', str_translate)
 	else:
-		str_translate = 'N/A'
+		continue
+		# if wanna cetrain text write in
+		# str_translate = 'N/A'
 
 	export_line = '%s = "%s";' % (str_expression, str_translate)
 
