@@ -4,14 +4,14 @@ import re
 
 ### Setup for Reading .xlsx ###
 # 讀取檔案
-read_xlsx_file_name = 'result_eddy.xlsx'
+read_xlsx_file_name = 'I18N_iOS_string_table_20200810_miny.xlsx'
 # 專案內表示文字之欄位
 column_expression = 0 
 # 欲轉換語系之欄位
 column_translate = 1
 
 ### Output Header ###
-header_1_export_file_name = 'Localizable_eddy.strings'
+header_1_export_file_name = 'Localizable.strings'
 header_2_from_where = 'from xlsx_convert.py' 
 header_3_created_by = 'auto generated'
 header_4_create_date = datetime.datetime.now().strftime('%Y/%-m/%-d')
@@ -20,6 +20,12 @@ header_6_copyright = 'JohnsonTechInc.'
 output = '//\n//  %s\n//  %s\n//\n//  created by %s on %s.\n//  Copyright © %s %s All rights reserved.\n//\n\n' % (header_1_export_file_name, header_2_from_where, header_3_created_by, header_4_create_date, header_5_create_year, header_6_copyright)
 
 ### Data Process ###
+print('=== START PROCESS, xlsx File: %s  ===' % read_xlsx_file_name)
+print('\n')
+print('Expression Column: %d' % column_expression)
+print('Translate Column: %d' % column_translate)
+print('\n')
+
 workbook = xlrd.open_workbook(read_xlsx_file_name)
 sheet = workbook.sheet_by_index(0)
 last_match_str = ''
@@ -33,16 +39,27 @@ for row in range(column_expression, sheet.nrows):
 
 	# prevent from wrong value, wrong translate to 'N/A'
 	# 5 means error, 6 means empty
-	target_type = sheet.cell_type(row, column_translate)
-	if row == 1:
-		print("row: %d, t_type: %d, last: %s" % (row, target_type, sheet.cell_value(row - 1,0)))
-	if target_type != 0 and target_type != 5 and target_type != 6:
+	cell_type = sheet.cell_type(row, column_translate)
+
+	# skip row
+	if row == 1: 
+		print("skip row: %d, cell_type: %d, key: %s" % (row, cell_type, sheet.cell_value(row - 1,0)))
+
+	# check cell type, refer to https://xlrd.readthedocs.io/en/latest/api.html#xlrd.sheet.Cell
+	# type = 0 : empty
+	# type = 5 : error
+	# type = 6 : blank
+	if cell_type != 0 and cell_type != 5 and cell_type != 6:
+		
 		str_translate = sheet.cell_value(row,column_translate)
+		
+		# only grab type = 1 : unicode string 
 		# find " character, add \
-		if target_type == 1:
+		if cell_type == 1:
 			str_translate = re.sub(r'(")', r'\\"', str_translate)
+
 	else:
-		print("row: %d, t_type: %d, last: %s" % (row, target_type, sheet.cell_value(row - 1,0)))
+		print("row: %d empty/error/blank, cell_type: %d, key: %s" % (row, cell_type, sheet.cell_value(row - 1,0)))
 		continue
 		# if wanna cetrain text write in
 		# str_translate = 'N/A'
@@ -105,6 +122,8 @@ for row in range(column_expression, sheet.nrows):
 text_file = open(header_1_export_file_name, "w")
 text_file.write(output)
 text_file.close()
+print('\n=== COMPLETE, Generated file: %s ===' % header_1_export_file_name)
+# print('' )
 
 
 
